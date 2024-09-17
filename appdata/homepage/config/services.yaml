@@ -1,0 +1,146 @@
+# For configuration options and examples, please see:
+# https://gethomepage.dev/latest/configs/services
+- Containers:
+    - Portainer:
+        icon: portainer.png
+        href: {{HOMEPAGE_VAR_PORTAINER_URL_EXTERNAL}}
+        siteMonitor: {{HOMEPAGE_VAR_PORTAINER_URL_EXTERNAL}}
+        container: portainer
+        description: docker gestionnary
+        widget:
+          type: portainer
+          url: {{HOMEPAGE_VAR_PORTAINER_URL_INTERNAL}}
+          env: 1
+          key: {{HOMEPAGE_VAR_PORTAINER_KEY}}
+    - Traefik:
+        icon: traefik.png
+        href: {{HOMEPAGE_VAR_TRAEFIK_URL_EXTERNAL}}
+        siteMonitor: {{HOMEPAGE_VAR_TRAEFIK_URL_EXTERNAL}}
+        container: traefik
+        description: reverse proxy
+        widget:
+          type: traefik
+          url: {{HOMEPAGE_VAR_TRAEFIK_URL_EXTERNAL}}
+          username: {{HOMEPAGE_VAR_TRAEFIK_USERNAME}}
+          password: {{HOMEPAGE_VAR_TRAEFIK_PASSWORD}} # optional
+    - authentik:
+        icon: authentik.png
+        href: {{HOMEPAGE_VAR_AUTHENTIK_URL_EXTERNAL}}
+        siteMonitor: {{HOMEPAGE_VAR_AUTHENTIK_URL_EXTERNAL}}
+        container: authentik_server
+        description: SSO connexion
+        widget:
+          type: authentik
+          url: {{HOMEPAGE_VAR_AUTHENTIK_URL_EXTERNAL}}
+          key: {{HOMEPAGE_VAR_AUTHENTIK_API_KEY}}
+    - Crowdsec:
+        icon: /icons/crowdsec.png
+        container: crowdsec
+        href: {{HOMEPAGE_VAR_CROWDSEC_WEBSITE}}
+        description: ip firewall
+        widget:
+          type: crowdsec
+          url: {{HOMEPAGE_VAR_CROWDSEC_URL_INTERNAL}}
+          username: {{HOMEPAGE_VAR_CROWDSEC_USERNAME}}
+          password: {{HOMEPAGE_VAR_CROWDSEC_PASSWORD}}
+    - Passbolt:
+        icon: /icons/passbolt.png
+        container: passbolt
+        href: {{HOMEPAGE_VAR_PASSBOLT_URL_EXTERNAL}}
+        description: password gestionnary
+
+- Media:
+    - Calendar:
+        widget:
+          type: calendar
+          view: monthly # or 'agenda' if you prefer a list view
+          firstDayInWeek: sunday # or 'monday', depending on your preference
+          showTime: true # to show event times
+          integrations:
+          - type: sonarr # active widget type that is currently enabled on homepage - possible values: radarr, sonarr, lidarr, readarr
+            service_group: Media # group name where widget exists
+            service_name: Sonarr # service name for that widget
+            #color: teal # optional - defaults to pre-defined color for the service (teal for sonarr)
+            params: # optional - additional params for the service
+              unmonitored: true # optional - defaults to false, used with *arr stack
+          - type: radarr # active widget type that is currently enabled on homepage - possible values: radarr, sonarr, lidarr, readarr
+            service_group: Media # group name where widget exists
+            service_name: Radarr # service name for that widget
+            #color: teal # optional - defaults to pre-defined color for the service (teal for sonarr)
+            params: # optional - additional params for the service
+              unmonitored: true # optional - defaults to false, used with *arr stack
+          - type: lidarr # active widget type that is currently enabled on homepage - possible values: radarr, sonarr, lidarr, readarr
+            service_group: Media # group name where widget exists
+            service_name: Lidarr # service name for that widget
+            #color: teal # optional - defaults to pre-defined color for the service (teal for sonarr)
+            params: # optional - additional params for the service
+              unmonitored: true # optional - defaults to false, used with *arr stack
+          - type: readarr # active widget type that is currently enabled on homepage - possible values: radarr, sonarr, lidarr, readarr
+            service_group: Media # group name where widget exists
+            service_name: Readarr # service name for that widget
+            #color: teal # optional - defaults to pre-defined color for the service (teal for sonarr)
+            params: # optional - additional params for the service
+              unmonitored: true # optional - defaults to false, used with *arr stack
+                
+    - Sonarr:
+        icon: sonarr.png
+        href: {{HOMEPAGE_VAR_SONARR_URL_EXTERNAL}}
+        siteMonitor: {{HOMEPAGE_VAR_SONARR_URL_EXTERNAL}}
+        description: gestionnaire de séries TV
+        widget:
+          type: sonarr
+          url: {{HOMEPAGE_VAR_SONARR_URL_INTERNAL}}
+          key: {{HOMEPAGE_VAR_SONARR_KEY}}
+          enableQueue: true
+    - Readarr:
+        icon: readarr.png
+        href: {{HOMEPAGE_VAR_READARR_URL_EXTERNAL}}
+        siteMonitor: {{HOMEPAGE_VAR_READARR_URL_EXTERNAL}}
+        description: gestionnaire de livres
+        widget:
+          type: readarr
+          url: {{HOMEPAGE_VAR_READARR_URL_INTERNAL}}
+          key: {{HOMEPAGE_VAR_READARR_KEY}}
+    - Prowlarr:
+        icon: prowlarr.png
+        href: {{HOMEPAGE_VAR_PROWLARR_URL_EXTERNAL}}
+        siteMonitor: {{HOMEPAGE_VAR_PROWLARR_URL_EXTERNAL}}
+        description: gestionnaire d'indexeurs
+        widget:
+          type: prowlarr
+          url: {{HOMEPAGE_VAR_PROWLARR_URL_INTERNAL}}
+          key: {{HOMEPAGE_VAR_PROWLARR_KEY}}
+    - Lidarr:
+        icon: lidarr.png
+        href: {{HOMEPAGE_VAR_LIDARR_URL_EXTERNAL}}
+        siteMonitor: {{HOMEPAGE_VAR_LIDARR_URL_EXTERNAL}}
+        description: gestionnaire de musique
+        widget:
+          type: lidarr
+          url: {{HOMEPAGE_VAR_LIDARR_URL_INTERNAL}}
+          key: {{HOMEPAGE_VAR_LIDARR_KEY}}
+    - Radarr:
+        icon: radarr.png
+        href: {{HOMEPAGE_VAR_RADARR_URL_EXTERNAL}}
+        siteMonitor: {{HOMEPAGE_VAR_RADARR_URL_EXTERNAL}}
+        description: gestionnaire de films
+        widget:
+          type: radarr
+          url: {{HOMEPAGE_VAR_RADARR_URL_INTERNAL}}
+          key: {{HOMEPAGE_VAR_RADARR_KEY}}
+
+- DNS:
+    - Cloudflare:
+        icon: /icons/cloudflare.png
+        href: {{HOMEPAGE_VAR_CLOUDFLARE_URL}}
+        description: gestion des DNS externe
+
+- downloads:
+    - qBittorrent:
+        href: {{HOMEPAGE_VAR_QBITTORRENT_URL_EXTERNAL}}
+        description: torrent downloader
+        widget:
+          type: qbittorrent
+          url: {{HOMEPAGE_VAR_QBITTORRENT_URL_EXTERNAL}}
+          username: {{HOMEPAGE_VAR_QBITTORRENT_USERNAME}}
+          password: {{HOMEPAGE_VAR_QBITTORRENT_PASSWORD}}

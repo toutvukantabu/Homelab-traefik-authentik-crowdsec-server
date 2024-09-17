@@ -1,0 +1,80 @@
+http:
+  middlewares:
+    http-cache:
+      plugin:
+        souin:
+          api:
+            # prometheus: {}
+            souin: {}
+          default_cache:
+            ttl: 60s  # TTL par défaut pour toutes les URLs
+            allowed_http_verbs:
+              - GET
+              - HEAD
+              - POST
+            default_cache_control: public, max-age=60
+            force: true
+          log_level: debug
+
+    portainer-cache:
+      plugin:
+        souin:
+          api:
+            prometheus: {}
+            souin: {}
+          default_cache:
+            regex:
+              exclude: '/api/.*|/auth/.*|/settings/.*'  # Exclure les APIs sensibles de Portainer du cache
+            ttl: 60s  # TTL global par défaut
+            allowed_http_verbs:
+              - GET
+              - HEAD
+            default_cache_control: public, max-age=60
+          log_level: debug
+          urls:
+            'portainer.{{ env "DOMAINNAME"}}':
+              ttl: 120s
+              default_cache_control: public, max-age=120
+            'portainer.{{ env "DOMAINNAME"}}/login':
+              ttl: 0s  # Ne pas mettre en cache la page de login
+          ykeys:
+            Portainer_API_Key:
+              headers:
+                Content-Type: 'application/json'
+          surrogate_keys:
+            Portainer_Surrogate_Key:
+              headers:
+                Content-Type: 'application/json'
+
+    servarr-cache:
+      plugin:
+        souin:
+          api:
+            prometheus: {}
+            souin: {}
+          default_cache:
+            regex:
+              exclude: '/api/.*|/auth/.*|/indexers/.*|/download/.*|/profile/.*'  # Exclure les API, indexeurs, et téléchargements du cache
+            ttl: 60s  # TTL global par défaut
+            allowed_http_verbs:
+              - GET
+              - HEAD
+            default_cache_control: public, max-age=60
+          log_level: debug
+          urls:
+            'sonarr.{{ env "DOMAINNAME" }}/':
+              ttl: 300s
+            'radarr.{{ env "DOMAINNAME" }}/':
+              ttl: 300s 
+            'lidarr.{{ env "DOMAINNAME" }}/':
+              ttl: 300s 
+            'readarr.{{ env "DOMAINNAME" }}/':
+              ttl: 300s 
+          ykeys:
+            Servarr_Static_Key:
+              headers:
+                Content-Type: 'text/html'
+          surrogate_keys:
+            Servarr_Surrogate_Key:
+              headers:
+                Content-Type: 'application/json'

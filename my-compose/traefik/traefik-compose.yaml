@@ -1,0 +1,60 @@
+###############################################################
+# 
+# https://docs.docker.com/compose/compose-file/05-services/#security_opt
+# https://docs.docker.com/compose/environment-variables/set-environment-variables/
+# 
+###############################################################
+name: traefik
+
+services:
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: unless-stopped
+#    user: ${PUID}:${PGID} # uncomment if you using a user and group role
+    env_file:
+      - ${DOCKERDIR}/my-compose/.env
+    security_opt:
+      - no-new-privileges=true
+    depends_on:
+      - socket-proxy
+    networks:
+      traefik:
+          aliases:
+            - traefik.${DOMAINNAME}
+      socket_proxy:
+    command:
+      - "--configFile=/config/traefik.yaml"
+      - "--certificatesResolvers.le.acme.email=${CF_EMAIL}" # set email on lets encrypt because environment variable not work on traefik.yaml
+    ports:
+      # - "80:80"           # SHORT Syntax of below verbose definition
+      - name: web
+        host_ip: 0.0.0.0    # All interfaces, not a specific one
+        target: 80          # Container Port
+        published: "80"     # STRING
+        protocol: tcp       # tcp or udp
+        app_protocol: http  # OPTIONAL. Layer 7 Protocol used.  "Richer behavior"
+        mode: host          # or Ingress for load balancing
+      - name: websecure
+        host_ip: 0.0.0.0
+        target: 443
+        published: "443"
+        protocol: tcp
+        app_protocol: https
+        mode: host
+    secrets:
+      - cf_dns_api_token
+    environment:
+      - TZ=${TZ}
+      - DOMAINNAME=${DOMAINNAME}
+      - TRAEFIK_ENTRYPOINTS_websecure_HTTP_TLS_DOMAINS_0_MAIN=${DOMAINNAME} # domain for websecure and let's encrypt
+      - TRAEFIK_ENTRYPOINTS_websecure_HTTP_TLS_DOMAINS_0_SANS=*.${DOMAINNAME} # domain for websecure and let's encrypt
+      ## uncomment if you want activate dashboard auth credentials
+      ## Docker Secrets
+      - CF_DNS_API_TOKEN_FILE=/run/secrets/cf_dns_api_token
+    volumes:
+      - "$DOCKERDIR/appdata/traefik/config:/config" # traefik.yaml
+      - "$DOCKERDIR/appdata/traefik/data:/data"     # acme.json defined in traefik.yaml
+      - "$DOCKERDIR/appdata/traefik/rules:/rules"   # Dynamic File Provider directory
+      - "$DOCKERDIR/appdata/crowdsec/ban.html:/ban.html" # html file for crowdsec ban  ### comment if you dont use crowdsec
+      - "$DOCKERDIR/logs/traefik:/logs"

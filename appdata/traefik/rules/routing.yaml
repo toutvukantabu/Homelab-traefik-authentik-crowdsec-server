@@ -1,0 +1,114 @@
+http:
+      # if you want add athentik on your service just add this on rour router
+  routers:
+
+    authentik-rtr:
+      service: authentik-svc
+      rule: Host(`{{ env "AUTHENTIK_HOST" }}`)
+    
+    authentik-output-rtr:
+      service: authentik-svc
+      rule: HostRegexp(`{subdomain:[a-z0-9-]+}.{{ env "DOMAINNAME" }}`) && PathPrefix(`{{ env "AUTHENTIK_OUTPOST_PATH_PREFIX" }}`)
+
+    traefik-rtr:
+      rule: "Host(`{{ env "TRAEFIK_DASHBOARD_HOST" }}`)"
+      service: api@internal
+      middlewares:
+        - traefik-dashboard-auth@file
+
+    portainer-rtr:
+      service: portainer-svc
+      rule: Host(`{{ env "PORTAINER_HOST" }}`)
+      middlewares:
+       - portainer-cache@file
+
+    homepage-rtr:
+      service: homepage-svc
+      rule: Host(`{{ env "HOMEPAGE_HOST" }}`)
+      middlewares:
+        - middlewares-authentik@file
+
+    prowlarr-rtr:
+      service: prowlarr-svc
+      rule: Host(`{{ env "PROWLARR_HOST" }}`)
+      middlewares:
+        - servarr-cache@file
+
+    sonarr-rtr:
+      service: sonarr-svc
+      rule: Host(`{{ env "SONARR_HOST" }}`)
+      middlewares:
+        - servarr-cache@file
+
+    radarr-rtr:
+      service: radarr-svc
+      rule: Host(`{{ env "RADARR_HOST" }}`)
+      middlewares:
+        - servarr-cache@file
+
+    lidarr-rtr:
+      service: lidarr-svc
+      rule: Host(`{{ env "LIDARR_HOST" }}`)
+      middlewares:
+        - servarr-cache@file
+        
+    readarr-rtr:
+      service: readarr-svc
+      rule: Host(`{{ env "READARR_HOST" }}`)
+      middlewares:
+        - servarr-cache@file
+        
+    torrent-rtr:
+      service: torrent-svc
+      rule: Host(`{{ env "TORRENT_HOST" }}`)
+
+  services:
+
+    authentik-svc:
+      loadBalancer:
+        servers:
+          - url: {{ env "AUTHENTIK_URL" }}
+
+    portainer-svc:
+      loadBalancer:
+        servers:
+          - url: {{ env "PORTAINER_URL" }}
+
+    homepage-svc:
+      loadBalancer:
+        servers:
+          - url: {{ env "HOMEPAGE_URL" }}
+
+    prowlarr-svc:
+      loadBalancer:
+        servers:
+          - url: {{ env "PROWLARR_URL" }}
+
+    sonarr-svc:
+      loadBalancer:
+        servers:
+          - url: {{ env "SONARR_URL" }}
+
+    radarr-svc:
+      loadBalancer:
+        servers:
+          - url: {{ env "RADARR_URL" }}
+
+    lidarr-svc:
+      loadBalancer:
+        servers:
+          - url: {{ env "LIDARR_URL" }}
+
+    readarr-svc:
+      loadBalancer:
+        servers:
+          - url: {{ env "READARR_URL" }}
+
+    torrent-svc:
+      loadBalancer:
+        servers:
+          - url: {{ env "TORRENT_URL" }}
+
+  serversTransports:
+    insecureTransport:
+      insecureSkipVerify: true

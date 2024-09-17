@@ -1,0 +1,59 @@
+###############################################################
+# Networks
+###############################################################
+networks:
+  socket_proxy:
+    name: socket_proxy
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.224.0/24
+  traefik:
+    name: traefik
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.255.224.0/20
+###############################################################
+# Docker Secrets
+# Owner (default): root:root
+# Recommend Set Owner to match container user Example: UID=1100, GID=1100
+# Permissions of files & directory on host to: 0400 (-r--)
+###############################################################
+secrets:
+  ## Cloudflare / Traefik
+  cf_email:
+    file: ${DOCKERDIR}/secrets/cf_email
+  cf_dns_api_token:
+    file: ${DOCKERDIR}/secrets/cf_dns_api_token
+  ## Authentik
+  authentik_postgresql_db:
+    file: ${DOCKERDIR}/secrets/authentik_postgresql_db
+  authentik_postgresql_user:
+    file: ${DOCKERDIR}/secrets/authentik_postgresql_user
+  authentik_postgresql_password:
+    file: ${DOCKERDIR}/secrets/authentik_postgresql_password
+  authentik_secret_key:
+    file: ${DOCKERDIR}/secrets/authentik_secret_key
+  gmail_smtp_username:
+    file: ${DOCKERDIR}/secrets/gmail_smtp_username
+  gmail_smtp_password:
+    file: ${DOCKERDIR}/secrets/gmail_smtp_password
+  # ## GeoIP
+  geoip_account_id:
+    file: ${DOCKERDIR}/secrets/geoip_account_id
+  geoip_license_key:
+    file: ${DOCKERDIR}/secrets/geoip_license_key
+###############################################################
+# Include
+# Merge all of the below compose files into one large compose at run time
+# Thanks to Anand (SmartHomeBeginner), this is clean!
+###############################################################
+include:
+  - ${DOCKERDIR}/my-compose/traefik/traefik-compose.yaml
+  - ${DOCKERDIR}/my-compose/socket-proxy/socket-proxy-compose.yaml
+  - ${DOCKERDIR}/my-compose/crowdsec/crowdsec-compose.yaml
+  - ${DOCKERDIR}/my-compose/authentik/authentik-compose.yaml
+  - ${DOCKERDIR}/my-compose/portainer/portainer-compose.yaml
+  - ${DOCKERDIR}/my-compose/servarr/servarr-compose.yaml
+  - ${DOCKERDIR}/my-compose/homepage/homepage-compose.yaml

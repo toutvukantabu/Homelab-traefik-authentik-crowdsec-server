@@ -1,0 +1,15 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    restart: unless-stopped
+    env_file:
+      - ${DOCKERDIR}/my-compose/.env
+    ports:
+      - 3000:3000
+    volumes:
+      - $DOCKERDIR/appdata/homepage/config:/app/config # Make sure your local config directory exists
+      - $DOCKERDIR/appdata/homepage/config/icons:/app/public/icons
+    networks:
+      - traefik
+      - socket_proxy

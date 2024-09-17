@@ -1,0 +1,26 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/latest/configs/bookmarks
+- Social:
+    - Twitter:
+        - icon: twitter.png
+          href: https://twitter.com/home?lang=fr
+          description: Social media platform
+    - LinkedIn:
+        - icon: linkedin.png
+          href: https://www.linkedin.com/home/?originalSubdomain=fr
+          description: Professional networking
+
+- Travail:
+    - GitLab:
+        - icon: gitlab.png
+          href: https://gitlab.com/users/sign_in
+          description: DevOps platform
+    - GitHub:
+        - icon: github.png
+          href: https://github.com/
+          description: Code hosting platform
+    - Stack Overflow:
+        - abbr: SOV
+          href: https://stackoverflow.com/questions/69185617/caddy-allow-http-with-api-platform
+          description: Developer Q&A

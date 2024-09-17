@@ -1,0 +1,30 @@
+################################################################
+# Middlewares (https://github.com/htpcBeginner/docker-traefik/blob/master/appdata/traefik2/rules/cloudserver/middlewares.yml)
+# 2024 update: https://github.com/htpcBeginner/docker-traefik/tree/master/appdata/traefik3/rules/hs
+# https://www.smarthomebeginner.com/traefik-docker-compose-guide-2022/
+#
+# Dynamic configuration
+################################################################
+http:
+  middlewares:
+    ################################################################
+    # Forward Authentication - OAUTH / 2FA
+    ################################################################
+    #
+    # https://github.com/goauthentik/authentik/issues/2366
+    forwardAuth-authentik:
+      forwardAuth:
+        address: "http://authentik_server:9000/outpost.goauthentik.io/auth/traefik"
+        trustForwardHeader: true
+        authResponseHeaders:
+          - X-authentik-username
+          - X-authentik-groups
+          - X-authentik-email
+          - X-authentik-name
+          - X-authentik-uid
+          - X-authentik-jwt
+          - X-authentik-meta-jwks
+          - X-authentik-meta-outpost
+          - X-authentik-meta-provider
+          - X-authentik-meta-app
+          - X-authentik-meta-version

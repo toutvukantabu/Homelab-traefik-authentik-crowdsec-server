@@ -1,0 +1,18 @@
+services:
+  portainer:
+    image: portainer/portainer-ee:2.20.3
+    container_name: portainer
+    restart: unless-stopped
+    command:  --host tcp://socket-proxy:2375
+    depends_on:
+      - socket-proxy
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - "$DOCKERDIR/appdata/portainer/data:/data"
+    networks:
+      - socket_proxy
+      - traefik
+    ports:
+      - "9090:9000"
+

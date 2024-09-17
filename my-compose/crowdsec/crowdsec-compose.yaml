@@ -1,0 +1,26 @@
+services:
+  crowdsec:
+    image: crowdsecurity/crowdsec:latest
+    container_name: crowdsec
+    expose:
+      - "8080"
+    depends_on:
+      - traefik
+    environment:
+      COLLECTIONS: "crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/sshd"
+    volumes:
+      - /var/log/crowdsec:/var/log/crowdsec:ro
+      - $DOCKERDIR/appdata/crowdsec/data:/var/lib/crowdsec/data/
+      - $DOCKERDIR/appdata/crowdsec/config/crowdsec:/etc/crowdsec
+      - $DOCKERDIR/appdata/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml  
+      - $DOCKERDIR/appdata/crowdsec/whitelists_custom.yaml:/etc/crowdsec/parsers/s02-enrich/whitelists.yaml
+      # read traefik logs   
+      - $DOCKERDIR/logs/traefik/:/var/log/traefik/:ro
+      # read linux auth logs 
+      - /var/log/auth.log:/var/log/auth.log:ro
+      - /var/log/syslog:/var/log/syslog:ro
+    restart: unless-stopped
+    labels:
+      - traefik.enable=false
+    networks:
+      - traefik

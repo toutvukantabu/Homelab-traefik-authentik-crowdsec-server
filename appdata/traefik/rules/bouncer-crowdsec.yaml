@@ -1,0 +1,18 @@
+http:
+  middlewares:
+    crowdsec:
+      plugin:
+        traefik-bouncer:
+          enabled: true
+          logLevel: DEBUG
+          updateIntervalSeconds: 60
+          defaultDecisionSeconds: 60
+          httpTimeoutSeconds: 10
+          crowdsecMode: live #live stream #alone
+          crowdsecAppsecEnabled: false
+          crowdsecAppsecHost: crowdsec:7422
+          crowdsecAppsecFailureBlock: true
+          crowdsecLapiKey: {{ env "CROWDSEC_TRAEFIK_BOUNCER_LAPI_KEY" }}
+          crowdsecLapiHost: crowdsec:8080
+          crowdsecLapiScheme: http
+          banHTMLFilePath: ./ban.html

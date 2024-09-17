@@ -1,0 +1,119 @@
+services:
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - TZ=${TZ}
+      - PUID=${SERVARR_PUID}
+      - PGID=${SERVARR_PGID}
+    volumes:
+      - $DOCKERDIR/appdata/servarr/prowlarr/config:/config
+      - $DOCKERDIR/appdata/servarr/prowlarr/Backup:/data/Backup
+      - ${BASE_PATH_MEDIA}/downloads:/data/downloads
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+    networks:
+      - traefik
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - TZ=${TZ}
+      - PUID=${SERVARR_PUID}
+      - PGID=${SERVARR_PGID}
+    volumes:
+      - $DOCKERDIR/appdata/servarr/sonarr/Config:/config
+      - $DOCKERDIR/appdata/servarr/sonarr/Backup:/data/Backup
+      - ${BASE_PATH_MEDIA}/series:/data/tvshows
+      - ${BASE_PATH_MEDIA}/downloads:/data/downloads
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+    networks:
+      - traefik
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - TZ=${TZ}
+      - PUID=${SERVARR_PUID}
+      - PGID=${SERVARR_PGID}
+    volumes:
+      - $DOCKERDIR/appdata/servarr/radarr/Config:/config
+      - $DOCKERDIR/appdata/servarr/radarr/Backup:/data/Backup
+      - ${BASE_PATH_MEDIA}/movies:/data/movies
+      - ${BASE_PATH_MEDIA}/downloads:/data/downloads
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+    networks:
+      - traefik
+
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    environment:
+      - TZ=${TZ}
+      - PUID=${SERVARR_PUID}
+      - PGID=${SERVARR_PGID}
+    volumes:
+      - $DOCKERDIR/appdata/servarr/lidarr/Config:/config
+      - $DOCKERDIR/appdata/servarr/lidarr/Backup:/data/Backup
+      - ${BASE_PATH_MEDIA}/music:/data/musicfolder
+      - ${BASE_PATH_MEDIA}/downloads:/data/downloads
+    ports:
+      - 8686:8686
+    restart: unless-stopped
+    networks:
+      - traefik
+
+  readarr:
+    image: lscr.io/linuxserver/readarr:develop
+    container_name: readarr
+    environment:
+      - TZ=Etc/UTC
+      - PUID=${SERVARR_PUID}
+      - PGID=${SERVARR_PGID}
+    volumes:
+      - $DOCKERDIR/appdata/servarr/readarr/config:/config
+      - ${BASE_PATH_MEDIA}/books:/data/books # optional
+      - ${BASE_PATH_MEDIA}/downloads:/data/downloads # optional
+    ports:
+      - 8787:8787
+    restart: unless-stopped
+    networks:
+      - traefik
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      - TZ=${TZ}
+      - WEBUI_PORT=8090
+      - TORRENTING_PORT=6881
+      - PUID=${SERVARR_PUID}
+      - PGID=${SERVARR_PGID}
+    volumes:
+      - $DOCKERDIR/appdata/servarr/qbittorrent:/config
+      - ${BASE_PATH_MEDIA}/downloads:/downloads #optional
+    ports:
+      - 8090:8090
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped
+    networks:
+      - traefik
+
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    environment:
+      - LOG_LEVEL=info
+    ports:
+      - 8191:8191
+    restart: unless-stopped
+    networks:
+      - traefik
+
